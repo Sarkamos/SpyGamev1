@@ -8,6 +8,7 @@
  All above must be included in any redistribution
  ****************************************************/
 
+//to do - check for other credits needed
 
 #include <SoftwareSerial.h>
 #include <DFRobotDFPlayerMini.h>
