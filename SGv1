@@ -1,3 +1,5 @@
+//to do: add credits in,
+
 #include <SoftwareSerial.h>
 #include <DFRobotDFPlayerMini.h>
 #include <Keypad.h> //http://www.arduino.cc/playground/uploads/Code/Keypad.zip
@@ -23,8 +25,6 @@ SoftwareSerial mySoftwareSerial(4, 5); // RX, TX
 
 // Create the Keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
-
-
 
 //<------------------------------------------------------------------------------ Void Setup
 void setup() {
@@ -182,8 +182,6 @@ else
   Serial.println("You Fail");
 }
 }
-
-
 
 
 byte check_switches()
