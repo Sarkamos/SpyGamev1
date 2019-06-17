@@ -1,0 +1,211 @@
+#include <SoftwareSerial.h>
+#include <DFRobotDFPlayerMini.h>
+#include <Keypad.h> //http://www.arduino.cc/playground/uploads/Code/Keypad.zip
+
+DFRobotDFPlayerMini myDFPlayer;
+void printDetail(uint8_t type, int value);
+SoftwareSerial mySoftwareSerial(4, 5); // RX, TX
+
+#define DEBOUNCE 100  // button debouncer  
+
+ //set up keyboard  
+  const byte ROWS = 4; // Four rows
+  const byte COLS = 4; //  columns
+  // Define the Keymap
+  char keys[ROWS][COLS] = {
+   {'1','2','3','A'},
+   {'4','5','6','B'}, //
+   {'7','8','9','C'}, //
+   {'*','0','#','D'} // 
+  };
+  byte rowPins[ROWS] = { 9,8,7,6 };//Connect keypad rows to these Arduino pins.
+  byte colPins[COLS] = { 13,12,11,10 };// Connect keypad columns to these Arduino pins.
+
+// Create the Keypad
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+
+
+
+//<------------------------------------------------------------------------------ Void Setup
+void setup() {
+
+Serial.begin(9600)  ;
+  //----Set volume----
+myDFPlayer.volume(10);  //Set volume value (0~30).
+myDFPlayer.EQ(DFPLAYER_EQ_NORMAL);
+myDFPlayer.outputDevice(DFPLAYER_DEVICE_SD);
+myDFPlayer.play(1);  //Play the first mp3
+delay(1000);
+ }
+  
+
+//<------------------------------------------------------------------------------------- Void Loop
+
+void loop() {
+//putstring(".");    // uncomment this to see if the loop isnt running
+int secretCodeOne[6]   = {1, 2, 3, 4, 5, 6};
+int secretCodeTwo[6]   = {1, 1, 2, 2, 3, 3};
+int secretCodeThree[6] = {2, 4, 6, 1, 3, 5};
+int secretCodeFour[6]  = {1, 2, 3, 5, 5, 5};
+int secretCodeFive[6]  = {1, 2, 3, 3, 2, 1};
+int secretCodeSix[6]   = {1, 2, 3, 4, 5, 1};
+
+int enteredCode[6] = {0, 0, 0, 0, 0, 0};
+int correctKeys = 0;
+int success = 0;
+byte pressed;        //stores values of button pressed
+int i = 0;           //loop iteration
+
+for (i=0;i<6;i++)    //stores pressed values in an array
+{
+  do
+  {
+    pressed = check_switches();
+  } while (pressed < 1);
+  enteredCode[i] = pressed;         //stores pressed values in an array
+  delay(500);
+  Serial.println(enteredCode[i]);   //print button pressed
+}
+
+
+for (i=0;i<6;i++)                   //Check Code One
+{
+  if (enteredCode[i] == secretCodeOne[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code One Correct");
+ myDFPlayer.play(1);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+for (i=0;i<6;i++)                   //Check Code Two
+{
+  if (enteredCode[i] == secretCodeTwo[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code Two Correct");
+  myDFPlayer.play(2);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+for (i=0;i<6;i++)                   //Check Code Three
+{
+  if (enteredCode[i] == secretCodeThree[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code Three Correct");
+  myDFPlayer.play(3);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+for (i=0;i<6;i++)                   //Check Code Four
+{
+  if (enteredCode[i] == secretCodeFour[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code Four Correct");
+  myDFPlayer.play(4);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+for (i=0;i<6;i++)                   //Check Code Five
+{
+  if (enteredCode[i] == secretCodeFive[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code Five Correct");
+  myDFPlayer.play(5);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+for (i=0;i<6;i++)                   //Check Code Six
+{
+  if (enteredCode[i] == secretCodeSix[i])
+  {
+    correctKeys = correctKeys +1;   //counts number of correct keys
+  }
+}
+if (correctKeys == 6)               //if the entered code matches code one, play track one
+{ 
+  Serial.println("Code Six Correct");
+  myDFPlayer.play(6);  //Play the numbered mp3
+  delay(1000)
+  success = 1;
+}
+correctKeys = 0;                     //reset correct key counter
+
+
+if(success == 1)
+{
+  Serial.println("You Got a Code Correct");
+  success = 0;
+}
+else
+{
+  myDFPlayer.play(13);  //Play the first mp3
+  delay(1000)
+  Serial.println("You Fail");
+}
+}
+
+
+
+
+byte check_switches()
+{
+  static byte previous[6];
+  static long time[6];
+  byte reading;
+  byte pressed;
+  byte index;
+  pressed = 0;
+
+  for (byte index = 0; index < 6; ++index) {
+    reading = digitalRead(14 + index);
+    if (reading == LOW && previous[index] == HIGH && millis() - time[index] > DEBOUNCE)
+    {
+      // switch pressed
+      time[index] = millis();
+      pressed = index + 1;
+      break;
+    }
+    previous[index] = reading;
+  }
+  // return switch number (1 - 6)
+  return (pressed);
+}
